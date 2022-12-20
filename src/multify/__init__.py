@@ -1,0 +1,2 @@
+
+from registry import register

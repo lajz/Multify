@@ -1,10 +1,20 @@
 
 
-from .models import Model
+from multify.models import Model
 
-registry : list[Model] = []
+class Registry:
+    """Registry holds a list of models for runs"""
+    
+    def __init__(self):
+        """__init__ registry"""
+        self.models : list[Model] = []
 
-def register(model : Model):
-    if model not in registry:
-        registry.append(model)
+    def register(self, model : Model):
+        """register add model to registry
+
+        Args:
+            model (Model): model to add to registry
+        """
+        if model not in self.models:
+            self.models.append(model)
         

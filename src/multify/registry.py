@@ -26,6 +26,18 @@ class Registry(Generic[T]):
             self.models.append(model)
     
     # TODO: set typing of parameters to be a function of T
-    def generate():
-        pass
+    # TODO: issue is that will not give type hints
+    def generate(self, **kwargs):
+        
+        if len(self.models) == 0:
+            raise ValueError("No models available")
+        
+        model = self.select_model()
+        
+        # TODO: check that paramater types match
+        model.generate(**kwargs)
+        
+    
+    def select_model(self) -> T:
+        return self.models[0]
         

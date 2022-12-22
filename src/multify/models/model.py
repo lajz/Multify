@@ -9,8 +9,8 @@ class Model(ABCMeta):
 
 
 # Text model
-class TextGenerationModel(Model):
+class TextCompletionModel(Model):
     
     @abstractmethod
-    def generate(self, prompt: str):
+    def generate(self, prompt: str, **kwargs):
         pass

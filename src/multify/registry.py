@@ -25,7 +25,7 @@ class Registry(Generic[T]):
         if model not in self.models:
             self.models.append(model)
     
-    # TODO: set typing of parameters to be a function of T
+    # TODO: set typing of parameters and return to be typing of parameters of T.generate
     # TODO: issue is that will not give type hints
     def generate(self, **kwargs):
         
@@ -35,9 +35,10 @@ class Registry(Generic[T]):
         model = self.select_model()
         
         # TODO: check that paramater types match
-        model.generate(**kwargs)
+        return model.generate(**kwargs)
         
     
     def select_model(self) -> T:
+        # TODO: implement
         return self.models[0]
         

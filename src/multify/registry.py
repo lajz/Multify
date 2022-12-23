@@ -27,7 +27,7 @@ class Registry(Generic[T]):
     
     # TODO: set typing of parameters and return to be typing of parameters of T.generate
     # TODO: issue is that will not give type hints
-    def generate(self, **kwargs):
+    def run(self, **kwargs):
         
         if len(self.models) == 0:
             raise ValueError("No models available")
@@ -35,8 +35,7 @@ class Registry(Generic[T]):
         model = self.select_model()
         
         # TODO: check that paramater types match
-        return model.generate(**kwargs)
-        
+        return model.run(**kwargs)
     
     def select_model(self) -> T:
         # TODO: implement

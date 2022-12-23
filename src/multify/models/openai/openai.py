@@ -1,8 +1,14 @@
 
-from multify.models.model import TextCompletionModel
+from multify.models.model import TextCompletionModel, ImageCreationModel
 
 import openai
 
+def validate_api_key(func):
+    def wrapper():
+        if openai.api_key is None:
+            raise ValueError("API key not set")
+        func()
+    return wrapper
 
 class OpenAI():
     
@@ -22,14 +28,23 @@ class OpenAI():
     
     def list_engines():
             return openai.Engine.list()
-        
+    
     class TextCompletion(TextCompletionModel):    
-        # TODO: turn engine, model_type into ENUM
-        # model_type refers to code generations, text generation, or image generation <-- could alternately implement as subclasses
-        def __init__(self, engine: str, model_type: str):
-            self.engine = engine
-            self.model_type = model_type
-
-        def generate(prompt: str, engine: str, **kwargs):
-            completion = openai.Completion.create(prompt=prompt, engine=engine, **kwargs)
-            return completion.choices[0].text
+        
+        def __init__(self, model: str, **kwargs):
+            self.model_args = {model: model, **kwargs}
+            
+        @validate_api_key
+        def run(self, prompt: str, **kwargs):
+            completion = openai.Completion.create(prompt=prompt, **self.model_args, **kwargs)
+            return [choice.text for choice in completion.choices]
+    
+    class ImageCreation(ImageCreationModel):    
+        
+        def __init__(self, **kwargs):
+            self.model_args = {**kwargs}
+            
+        @validate_api_key
+        def run(self, prompt: str, **kwargs):
+            completion = openai.Image.create(prompt=prompt, **self.model_args, **kwargs)
+            return [image_data.url for image_data in completion.data]

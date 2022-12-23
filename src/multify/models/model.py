@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 class Model(ABCMeta):
     
     @abstractmethod
-    def generate(self, **kwargs):
+    def run(self, **kwargs):
         pass
 
 
@@ -12,5 +12,11 @@ class Model(ABCMeta):
 class TextCompletionModel(Model):
     
     @abstractmethod
-    def generate(self, prompt: str, **kwargs):
+    def run(self, prompt: str, **kwargs):
+        pass
+    
+class ImageCreationModel(Model):
+    
+    @abstractmethod
+    def run(self, prompt: str, **kwargs):
         pass

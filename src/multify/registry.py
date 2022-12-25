@@ -1,5 +1,6 @@
 
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Callable
+from random import choice
 
 from multify.models import Model
 
@@ -14,7 +15,7 @@ class Registry(Generic[T]):
     
     def __init__(self):
         """__init__ registry"""
-        self.models : list[T] = []
+        self.models : set[T] = set()
 
     def register(self, model : T):
         """register add model to registry
@@ -22,22 +23,36 @@ class Registry(Generic[T]):
         Args:
             model (Model): model to add to registry
         """
-        if model not in self.models:
-            self.models.append(model)
+        if model in self.models:
+            raise ValueError("Model already added.")
+        
+        self.models.add(model)
     
+    def remove(self, model: T) -> bool:
+        if model in self.models:
+            self.models.remove(model)
+            return True
+        else:
+            return False
+        
     # TODO: set typing of parameters and return to be typing of parameters of T.generate
     # TODO: issue is that will not give type hints
-    def run(self, **kwargs):
+    def run(self, model_selector : Callable[[set[T]], T] = None, **kwargs) -> tuple[any, tuple[T, any]]:
+        
+        model = model_selector(self.models) if model_selector is not None else self.select_model()
+        
+        # TODO: check that paramater types match
+        result : tuple[any, tuple[T, any]] = model.run(**kwargs)
+       
+        # TODO: validate that result meets quality
+        
+        return result
+    
+    def select_model(self) -> T:
         
         if len(self.models) == 0:
             raise ValueError("No models available")
         
-        model = self.select_model()
-        
-        # TODO: check that paramater types match
-        return model.run(**kwargs)
-    
-    def select_model(self) -> T:
         # TODO: implement
-        return self.models[0]
+        return choice(list(self.models))
         

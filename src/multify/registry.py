@@ -3,6 +3,7 @@ from typing import TypeVar, Generic, Callable
 from random import choice
 
 from multify.models import Model
+from multify.verification import verify_manually
 
 T = TypeVar('T', bound=Model)
 
@@ -44,7 +45,8 @@ class Registry(Generic[T]):
         # TODO: check that paramater types match
         result : tuple[any, tuple[T, any]] = model.run(**kwargs)
        
-        # TODO: validate that result meets quality
+        # TODO: make verification optional
+        success, info = verify_manually(kwargs, result)
         
         return result
     

@@ -1,8 +1,8 @@
 
-from typing import Union
-from multify.models.model import TextCompletionModel, ImageCreationModel
-
 import openai
+from typing import Union
+
+from multify.models.model import TextCompletionModel, ImageCreationModel
 
 def validate_api_key(func):
     def wrapper():

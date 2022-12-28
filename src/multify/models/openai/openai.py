@@ -4,10 +4,10 @@ from typing import Union
 
 from multify.models.model import TextCompletionModel, ImageCreationModel
 
-def validate_api_key(func):
+def validate_openai_api_key(func):
     def wrapper():
         if openai.api_key is None:
-            raise ValueError("API key not set")
+            raise ValueError("API key not set. Please call OpenAI.setup()")
         func()
     return wrapper
 
@@ -35,7 +35,7 @@ class OpenAI():
         def __init__(self, model: str, **kwargs):
             self.model_args = {model: model, **kwargs}
             
-        @validate_api_key
+        @validate_openai_api_key
         def run(self, prompt: str, **kwargs) -> tuple[Union[str, list[str]], tuple[TextCompletionModel, any]]:
             completion = openai.Completion.create(prompt=prompt, **self.model_args, **kwargs)
             return [choice.text for choice in completion.choices], (self, completion)
@@ -45,7 +45,7 @@ class OpenAI():
         def __init__(self, **kwargs):
             self.model_args = {**kwargs}
             
-        @validate_api_key
+        @validate_openai_api_key
         def run(self, prompt: str, **kwargs) -> tuple[Union[str, list[str]], tuple[ImageCreationModel, any]]:
             completion = openai.Image.create(prompt=prompt, **self.model_args, **kwargs)
             return [image_data.url for image_data in completion.data], (self, completion)

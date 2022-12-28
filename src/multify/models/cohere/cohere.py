@@ -5,10 +5,10 @@ from typing import Union
 
 from multify.models.model import TextCompletionModel
 
-def validate_api_key(func):
+def validate_cohere_api_key(func):
     def wrapper():
-        if cohere.api_key is None:
-            raise ValueError("API key not set")
+        if Cohere.co is None:
+            raise ValueError("API key not set. Please call Cohere.setup()")
         func()
     return wrapper
 
@@ -25,7 +25,7 @@ class Cohere():
         def __init__(self, **kwargs):
             self.model_args = {**kwargs}
             
-        @validate_api_key
+        @validate_cohere_api_key
         def run(self, prompt: str, **kwargs) -> tuple[Union[str, list[str]], tuple[TextCompletionModel, any]]:
             response = Cohere.co.generate(
 				prompt=prompt, **self.model_args, **kwargs
